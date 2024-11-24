@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anime Video Upload</title>
+</head>
+<body>
+  <h1>Upload Anime Video</h1>
+  <form id="uploadForm" enctype="multipart/form-data">
+    <label for="video">Choose video:</label>
+    <input type="file" id="video" name="video" accept="video/*" required>
+    <button type="submit">Upload</button>
+  </form>
+  <div id="response"></div>
+
+  <script>
+    const form = document.getElementById('uploadForm');
+    const responseDiv = document.getElementById('response');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      const response = await fetch('/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        responseDiv.innerHTML = `<p>${result.message}</p><video controls width="600"><source src="${result.filePath}" type="video/mp4"></video>`;
+      } else {
+        responseDiv.innerHTML = `<p>Error: ${result.error}</p>`;
+      }
+    });
+  </script>
+</body>
+</html>
